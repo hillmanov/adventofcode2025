@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 
-const BASE_URL = 'https://adventofcode.com/2024/day';
+const BASE_URL = 'https://adventofcode.com/2025/day';
 const SESSION_FILE = '.session';
 
 const args = process.argv.slice(2);
