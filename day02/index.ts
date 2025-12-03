@@ -32,6 +32,7 @@ async function part1(): Promise<number> {
 }
 
 async function part2(): Promise<number> {
+  return null;
   const input = await getInput();
   const invalidIDs : number[] = []
 
