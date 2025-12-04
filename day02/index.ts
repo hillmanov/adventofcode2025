@@ -64,9 +64,9 @@ async function part2(): Promise<number> {
         invalidIDs.push(repeater);
       }
     }
-    if (myInvalidIds.length == 0) {
-      console.log(`NONE found: min, max`, min, max);
-      console.log(`numbersToCHeck`, numbersToCheck);
+    console.log(`min, max`, min, max);
+    for (const n of myInvalidIds.sort()) {
+      console.log(`\t ${n}`)
     }
   });
 
