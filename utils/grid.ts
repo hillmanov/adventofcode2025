@@ -14,7 +14,7 @@ export enum DIRECTION {
   UL = 7
 }
 
-export const Delta = {
+export const Delta: Record<DIRECTION, number[]> = {
   [DIRECTION.U]: [-1, 0],
   [DIRECTION.R]: [0, 1],
   [DIRECTION.D]: [1, 0],
