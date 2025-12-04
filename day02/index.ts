@@ -14,13 +14,12 @@ async function part1(): Promise<number> {
     if (getDigitCount(min) % 2 !== 0 && getDigitCount(max) % 2 !== 0)  {
       return;
     }
-    const [lowerBound, upperBound] = map([getHigherEventLength(min), getLowerEvenLength(max)], String);
+    const [lowerBound, upperBound] = [getUpperBoundMagnitude(min).toString(), getMaxCurrentMagnitude(max).toString()]
 
-    const [lowerBoundLeft, lowerBoundRight] = map([lowerBound.substring(0, lowerBound.length / 2), lowerBound.substring(lowerBound.length / 2)], parseInt);
-    const [upperBoundLeft, upperBoundRight] = map([upperBound.substring(0, upperBound.length / 2), upperBound.substring(upperBound.length / 2)], parseInt);
+    const start = parseInt(lowerBound.substring(0, lowerBound.length / 2));
+    const end = parseInt(upperBound.substring(0, upperBound.length / 2));
 
-    const [domainMin, domainMax] = [lowerBoundLeft, Math.max(upperBoundLeft, upperBoundRight)];
-    for (let i = domainMin; i <= domainMax; i++) {
+    for (let i = start; i <= end; i++) {
       const testNum = (i * Math.pow(10, getDigitCount(i))) + i;
       if (testNum >= min && testNum <= max) {
         invalidIDs.push(testNum);
@@ -36,10 +35,50 @@ async function part2(): Promise<number> {
   const invalidIDs : number[] = []
 
   each(input, ({ min, max }) => {
-    invalidIDs.push(...getRepeats(min, max));
+    const myInvalidIds = [];
+    const explodedMin = explode(min);
+    const explodedMax = explode(max);
+    if (explodedMin.length < explodedMax.length) {
+      explodedMin.unshift(0);
+    }
+
+    const len = explodedMin.length / 2;
+  
+    const numbersToCheck: number[] = [];
+    for (let i = 0; i <= len; i++) {
+      numbersToCheck.push(numberify(take(explodedMin, i+1)))
+      numbersToCheck.push(numberify(take(explodedMax, i+1)))
+    }
+    
+    // Handle the case when the first digits are different, like 2000-5000
+    if (explodedMin[0] < explodedMax[0]) {
+      for (let i = explodedMin[0]; i <= numberify(take(explodedMax, len)); i++) {
+        numbersToCheck.push(i);
+      }
+    }
+
+    for (const n of uniq(numbersToCheck)) {
+      const repeater = doesRepeat(n, min, max);
+      if (repeater > 0) {
+        myInvalidIds.push(repeater);
+        invalidIDs.push(repeater);
+      }
+    }
+    if (myInvalidIds.length == 0) {
+      console.log(`NONE found: min, max`, min, max);
+      console.log(`numbersToCHeck`, numbersToCheck);
+    }
   });
 
   return sum(uniq(invalidIDs))
+}
+
+function numberify(nums: number[]): number {
+  let number = 0;
+  for (const [i, n] of nums.entries()) {
+    number += n * Math.pow(10, (nums.length - i - 1));
+  }
+  return number;
 }
 
 function getRepeats(min: number, max: number): number[] {
@@ -98,7 +137,7 @@ function getDigitCount(num: number): number {
   return num.toString().length;
 }
 
-function getHigherEventLength(num: number, skipEvenCheck = true): number {
+function getUpperBoundMagnitude(num: number, skipEvenCheck = true): number {
   if (getDigitCount(num) % 2 === 0 && skipEvenCheck) {
     return num;
   }
@@ -106,7 +145,7 @@ function getHigherEventLength(num: number, skipEvenCheck = true): number {
   return Math.pow(10, getDigitCount(num));
 }
 
-function getLowerEvenLength(num: number, skipEvenCheck = true): number {
+function getMaxCurrentMagnitude(num: number, skipEvenCheck = true): number {
   if (getDigitCount(num) % 2 === 0 && skipEvenCheck) {
     return num;
   }
