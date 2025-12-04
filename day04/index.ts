@@ -31,35 +31,27 @@ async function part1(): Promise<number> {
 
 async function part2(): Promise<number> {
   const floor = await getInput();
-
   let accessible = 0;
-  let toRemove: Point[] = [];
 
-  do {
-    each(toRemove, p => {
-      floor[p.row][p.col] = '.'
-    });
-
-    toRemove = [];
-
+  let modified = true;
+  while(modified) {
+    modified = false;
     walkGrid(floor, (value, point) => {
-      let numRolls = 0;
       if (value === '@') {
+        let numRolls = 0;
         map(OMNI_DIRECTIONS, (dir) => {
           if (valueAt(floor, go(point, dir)) === '@') {
-            if (numRolls++) {
-              return false
-            }
+            numRolls++
           }
-        })  
-        if (numRolls <= 3) {
-          accessible++;
-          toRemove.push(point);
+        })  ;
+        if (numRolls < 4) {
+          accessible = accessible + 1;
+          modified = true
+          floor[point.row][point.col] = '.';
         }
       }
     });
-
-  } while (toRemove.length > 0)
+  }
 
   return accessible;
 }
