@@ -13,13 +13,12 @@ async function part1(): Promise<number> {
 
   let freshCount = 0;
   each(ids, id => {
-    for (let i = 0; i < consolidatedRanges.length; i++) {
-      const range = consolidatedRanges[i];
+    each(consolidatedRanges, range => {
       if (id >= range.start && id <= range.end) {
         freshCount++
-        break
+        return false
       }
-    }
+    })
   });
 
   return freshCount;
