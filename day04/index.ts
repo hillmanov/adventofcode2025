@@ -5,7 +5,6 @@ import {
   go,
   valueAt,
   OMNI_DIRECTIONS,
-  type Point,
 } from '../utils/grid';
 
 async function part1(): Promise<number> {
@@ -15,9 +14,11 @@ async function part1(): Promise<number> {
   walkGrid(floor, (value, point) => {
     let numRolls = 0;
     if (value === '@') {
-      map(OMNI_DIRECTIONS, (dir) => {
+      each(OMNI_DIRECTIONS, (dir) => {
         if (valueAt(floor, go(point, dir)) === '@') {
-          numRolls++
+         if (numRolls++ > 3) {
+            return false
+          }
         }
       })  
       if (numRolls <= 3) {
@@ -39,11 +40,13 @@ async function part2(): Promise<number> {
     walkGrid(floor, (value, point) => {
       if (value === '@') {
         let numRolls = 0;
-        map(OMNI_DIRECTIONS, (dir) => {
+        each(OMNI_DIRECTIONS, (dir) => {
           if (valueAt(floor, go(point, dir)) === '@') {
-            numRolls++
+            if (numRolls++ > 3) {
+              return false;
+            }
           }
-        })  ;
+        });
         if (numRolls < 4) {
           accessible = accessible + 1;
           modified = true
