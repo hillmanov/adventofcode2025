@@ -24,7 +24,7 @@ function getMinimumClicks(state: number, target: number, buttons: number[]): num
   let minPresses = buttons.length;
 
   const click = (state: number, target: number, buttons: number[], buttonToPress: number, presses: number): void => {
-    if (presses >= minPresses || presses >= buttons.length) {
+    if (presses >= minPresses || presses >= buttons.length || (state & buttonToPress) == buttonToPress) {
       return;
     }
     state ^= buttonToPress;
@@ -35,7 +35,9 @@ function getMinimumClicks(state: number, target: number, buttons: number[]): num
     }
 
     for (const button of buttons) {
-      click(state, target, buttons, button, presses + 1);
+      if (button != buttonToPress) {
+        click(state, target, buttons, button, presses + 1);
+      }
     }
   }
   
